@@ -1,8 +1,13 @@
 package view;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -75,19 +80,31 @@ public class ListController {
 		      
 		      
 		      try {
-	                // create an ObjectInputStream for the file we created before
-	                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("test.txt"));
-	                System.out.println("available: "+ ois.available());
-	                while(true){
-	                	Song song = (Song) ois.readObject();
-	                	songs.add(song);
-	                	System.out.println("*name:" + (String) song.getName()+"  artist: "+(String) song.getArtist());
-	                }
-
-
+		    	  File file = new File("songlist.txt");
+		    	  System.out.println("Reading file");
+			      if(!file.exists()){
+			    	System.out.println("File does not exist.");
+		          	file.createNewFile();
+		          }
+			      FileReader fw = new FileReader(file);
+			      BufferedReader bw = new BufferedReader(fw);
+	            	String line;
+	            	int year = 0;
+	            	while((line = bw.readLine()) != null){
+	            		System.out.println(line);
+	            		String[] s = line.split(",");
+	            		if(s[3].equals("")){
+	            			year = 0;
+	            		} else {
+	            			year = Integer.parseInt(s[3]);
+	            		}
+	            		Song song = new Song(s[0], s[1], s[2], year);
+	            		songs.add(song);
+	            	}
+	            	bw.close();
 	             } catch (Exception ex) {
-	            	 System.out.println("Done! EOF!");
-	                ex.printStackTrace();
+	            	 System.out.println("Finished writing file.");
+	                 ex.printStackTrace();
 	             }
 		      
 		      obsList = FXCollections.observableArrayList(songs);               
@@ -116,20 +133,22 @@ public class ListController {
 		        public void run() {
 		            System.out.println("In shutdown hook");
 		            try {
-
-		                // create a new file with an ObjectOutputStream
-		                FileOutputStream out = new FileOutputStream("test.txt");
-		                ObjectOutputStream oout = new ObjectOutputStream(out);
-
-		                // write something in the file
-		                for(Song s : obsList){
-		                	oout.writeObject(s);
-		                }
-		                oout.flush();
-
+		            	File file = new File("songlist.txt");
+		            	if(file.exists()){
+		            		file.delete();
+		            	}
+		            	file.createNewFile();
+		            	FileWriter fw = new FileWriter(file);
+		            	BufferedWriter bw = new BufferedWriter(fw);
+		            	Iterator<Song> itr = obsList.iterator();
+		            	while(itr.hasNext()){
+		            		Song s = (Song) itr.next();
+		            		bw.write(""+s.getName()+","+s.getAlbum()+","+s.getArtist()+","+s.getYear()+"\n");
+		            	}
+		            	bw.close();
 		             } catch (Exception ex) {
-		            	 System.out.println("Done! EOF");
-		                ex.printStackTrace();
+		            	 System.out.println("Finished writing file.");
+		                 //ex.printStackTrace();
 		             }
 		        }
 		    }, "Shutdown-thread"));
