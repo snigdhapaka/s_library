@@ -1,20 +1,22 @@
 package model;
 
-public class Song implements Comparable<Song>{
-	String name;
-	String artist;
-	String album;
-	int year;
+import java.io.Serializable;
+
+public class Song implements Comparable<Song>, Serializable{
+	private String name;
+	private String artist;
+	private String album;
+	private int year;
 	
-	public Song(String name, String artist, String album, int year){
+	public Song(String name, String album, String artist, int year){
 		this.name = name;
 		this.artist = artist;
 		this.album = album;
 		this.year = year;
 	}
 	
-	public Song(String name, String artist, String album){
-		this(name, artist, album, 0);
+	public Song(String name, String album, String artist){
+		this(name, album, artist, 0);
 	}
 	
 	public Song(String name, String artist, int year){
@@ -62,13 +64,23 @@ public class Song implements Comparable<Song>{
 		return this.getName();
 	}
 	
-	public int compareTo(Song other){
-		return 0;
+	public int compareTo(Song other){ // helpful for alphabetical search
+		if (this.equals(other)){
+			return 0; 
+		}else if(this.name.compareToIgnoreCase(other.name)>0){
+			return 1;
+			
+		} else{
+			return -1;
+		}
 	}
 	
-	public boolean equals(Song other){
-		if(this.name.equals(other.name) && this.artist.equals(other.artist)){
-			return true;
+	public boolean equals(Object other){
+		if(other != null && (other instanceof Song)){
+			Song song = (Song) other;
+			if(this.name.equalsIgnoreCase(song.name) && this.artist.equalsIgnoreCase(song.artist)){
+				return true;
+			}
 		}
 		return false;
 	}
