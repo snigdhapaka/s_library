@@ -1,3 +1,4 @@
+/* Group 41: Niral Shah (nys7), Snigdha Paka (sp1088) */
 package model;
 
 import java.io.Serializable;
