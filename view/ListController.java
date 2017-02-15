@@ -66,9 +66,9 @@ public class ListController {
 		      
 		      try {
 		    	  File file = new File("songlist.txt");
-		    	  //System.out.println("Reading file");
+		    	  System.out.println("Reading file");
 			      if(!file.exists()){
-			    	//System.out.println("File does not exist.");
+			    	System.out.println("File does not exist.");
 		          	file.createNewFile();
 		          }
 			      FileReader fw = new FileReader(file);
@@ -340,12 +340,16 @@ public class ListController {
 	          if(result.get() == deleteButton)
 	          {
 	              obsList.remove(index);
+	              clearInfo();
 	              if (obsList.size() > 1){
 	    	    	  listView.getSelectionModel().select(index);
+	    	    	  showInfo();
 	    	      }else if(obsList.size() > 0){
 	    	    	  listView.getSelectionModel().select(0);
+	    	    	  showInfo();
 	    	      }
 	             alert.close();
+	             
 	          }
 	          else if(result.get() == cancelButton)
 	          {
