@@ -1,3 +1,4 @@
+/* Group 41: Niral Shah (nys7), Snigdha Paka (sp1088) */
 package view;
 
 import java.io.BufferedReader;
@@ -58,32 +59,16 @@ public class ListController {
 	   private ObservableList<Song> obsList;              
 	  
 	   public void start(Stage mainStage) {    
-		   
-		   /*Song song1 = new Song("Hello", "25", "Adele", 2015);
-			Song song2 = new Song("Thirller", "Thriller", "MJ", 1982);
-			Song song3 = new Song("Billie Jean", "Thriller", "MJ", 1982);
-			Song song4 = new Song("Alejandro", "The Fame Monster", "Lady Gaga", 2009);
-			Song song5 = new Song("Starboy", "Starboy", "The Weeknd", 2016);
-			
-		      obsList = FXCollections.observableArrayList(                               
-		    		  	song1,
-		    		  	song2,
-		    		  	song3,
-		    		  	song4,
-		    		  	song5
-		    		  	);               
-		      listView.setItems(obsList);  
-		      */
 		   	  
-		   	  System.out.println("Extracting the songs from file");
+		   	  //System.out.println("Extracting the songs from file");
 		      ArrayList<Song> songs = new ArrayList<Song>();
 		      
 		      
 		      try {
 		    	  File file = new File("songlist.txt");
-		    	  System.out.println("Reading file");
+		    	  //System.out.println("Reading file");
 			      if(!file.exists()){
-			    	System.out.println("File does not exist.");
+			    	//System.out.println("File does not exist.");
 		          	file.createNewFile();
 		          }
 			      FileReader fw = new FileReader(file);
@@ -91,8 +76,8 @@ public class ListController {
 	            	String line;
 	            	int year = 0;
 	            	while((line = bw.readLine()) != null){
-	            		System.out.println(line);
-	            		String[] s = line.split(",");
+	            		//System.out.println(line);
+	            		String[] s = line.split("_,_");
 	            		if(s[3].equals("")){
 	            			year = 0;
 	            		} else {
@@ -103,7 +88,7 @@ public class ListController {
 	            	}
 	            	bw.close();
 	             } catch (Exception ex) {
-	            	 System.out.println("Finished writing file.");
+	            	 System.out.println("Error when reading file.");
 	                 ex.printStackTrace();
 	             }
 		      
@@ -121,7 +106,7 @@ public class ListController {
 		      			    	showInfo());
 		      
 		      // select the first item if list is not empty 
-		      if (obsList.size() > 1){
+		      if (obsList.size() > 0){
 		    	  listView.getSelectionModel().select(0);
 		      }
 		      
@@ -143,7 +128,7 @@ public class ListController {
 		            	Iterator<Song> itr = obsList.iterator();
 		            	while(itr.hasNext()){
 		            		Song s = (Song) itr.next();
-		            		bw.write(""+s.getName()+","+s.getAlbum()+","+s.getArtist()+","+s.getYear()+"\n");
+		            		bw.write(""+s.getName()+"_,_"+s.getAlbum()+"_,_"+s.getArtist()+"_,_"+s.getYear()+"\n");
 		            	}
 		            	bw.close();
 		             } catch (Exception ex) {
@@ -172,17 +157,7 @@ public class ListController {
 					fill_edit();
 				} else
 					System.out.println("NULL");
-				
-//			}catch(Exception e){
-//				e.printStackTrace();
-//				Alert alert = new Alert(AlertType.INFORMATION);
-//				alert.setTitle("Error!");
-//				alert.setHeaderText("Error the song cannot be shown");
-//				String content = "It seems the list is empty";
-//				alert.setContentText(content);
-//				clearInfo();
-//				alert.showAndWait();
-//			}
+
 		}
 	   
 	   private void clearInfo(){
@@ -196,13 +171,11 @@ public class ListController {
 			  edit_album.setText("");
 			  
 		}
+	   
 	   public void alert(String message){
-		   Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Error Message");
-			alert.setHeaderText(message);
-			/*String content = "Song Name: "+ song.getName()
-			+"\nArtist: "+ song.getArtist();
-			alert.setContentText(content);*/
+		     Alert alert = new Alert(AlertType.INFORMATION);
+			 alert.setTitle("Error Message");
+			 alert.setHeaderText(message);
 	         ButtonType okButton = new ButtonType("OK", ButtonData.CANCEL_CLOSE);
 	         Optional<ButtonType> result = alert.showAndWait();
 	         if(result.get() == okButton)
@@ -340,12 +313,17 @@ public class ListController {
 			}
 			
 		}
+		
 		public void delete(){
 			int index = listView.getSelectionModel().getSelectedIndex();
+			if(index == -1){
+				alert("Song Library is Empty.");
+				return;
+			}
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Delete Item: "+listView.getSelectionModel().getSelectedItem());
 			alert.setHeaderText("Are you sure you want to delete?");
-		
+			
 			String content = "Song Name: "+ 
 							listView.getSelectionModel().getSelectedItem().getName()
 							+"\nArtist:"+
@@ -362,9 +340,9 @@ public class ListController {
 	          if(result.get() == deleteButton)
 	          {
 	              obsList.remove(index);
-	              if (obsList.size() >2){
+	              if (obsList.size() > 1){
 	    	    	  listView.getSelectionModel().select(index);
-	    	      }else if(obsList.size()>1){
+	    	      }else if(obsList.size() > 0){
 	    	    	  listView.getSelectionModel().select(0);
 	    	      }
 	             alert.close();
